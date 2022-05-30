@@ -1,11 +1,27 @@
-const {Storage} = require('@google-cloud/storage');
+const Spice = require("../model/spice");
 
 const all = async (req, res) => {
-    return res.send("this is dictionary");
-}
+  try {
+    // get all data spices
+    const spices = await Spice.findAll({
+      attributes: [
+        ["id", "spiceId"],
+        "name",
+        "latin_name",
+        "image",
+        "description",
+      ],
+    });
+
+    return res.send(spices);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).end();
+  }
+};
 
 const detail = async (req, res) => {
-    return res.send("this is detail dictionary")
-}
+  return res.send("this is detail dictionary");
+};
 
-module.exports = {all};
+module.exports = { all, detail };

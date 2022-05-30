@@ -22,7 +22,11 @@ router.get(
 );
 
 // dictionary of spice
-router.get("/spices", SpiceController.all);
-router.get("/spices/:id", SpiceController.detail)
+router.get(
+  "/spices",
+  passport.authenticate("jwt", { session: false }),
+  SpiceController.all
+);
+router.get("/spices/:id", SpiceController.detail);
 
 module.exports = router;
