@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const UserController = require("../controller/userController");
+const SpiceController = require("../controller/spiceController");
 require("../middleware/auth");
 
 // welcome api
@@ -19,5 +20,9 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   UserController.getProfile
 );
+
+// dictionary of spice
+router.get("/spices", SpiceController.all);
+router.get("/spices/:id", SpiceController.detail)
 
 module.exports = router;
