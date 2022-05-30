@@ -13,7 +13,11 @@ const all = async (req, res) => {
       ],
     });
 
-    return res.send(spices);
+    return res.json({
+      error: false,
+      message: "Data spices fetched successfully",
+      spicesResult: spices,
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).end();
