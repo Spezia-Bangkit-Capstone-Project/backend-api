@@ -21,7 +21,6 @@ const all = async (req, res) => {
         spice
           .getDataValue("benefits")
           .split(",")
-          .map((value) => value.trim())
       )
     );
 
