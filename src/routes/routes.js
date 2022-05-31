@@ -24,9 +24,8 @@ router.get(
 // dictionary of spice
 router.get(
   "/spices",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   SpiceController.all
 );
-router.get("/spices/:id", SpiceController.detail);
 
 module.exports = router;

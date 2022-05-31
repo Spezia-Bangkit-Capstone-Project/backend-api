@@ -10,8 +10,20 @@ const all = async (req, res) => {
         "latin_name",
         "image",
         "description",
+        ["benefit", "benefits"],
       ],
     });
+
+    // reformat spices benefits value
+    spices.forEach((spice) =>
+      spice.setDataValue(
+        "benefits",
+        spice
+          .getDataValue("benefits")
+          .split(",")
+          .map((value) => value.trim())
+      )
+    );
 
     return res.json({
       error: false,
@@ -24,8 +36,4 @@ const all = async (req, res) => {
   }
 };
 
-const detail = async (req, res) => {
-  return res.send("this is detail dictionary");
-};
-
-module.exports = { all, detail };
+module.exports = { all };
