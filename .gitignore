@@ -1,4 +1,5 @@
 .env
+app.yaml
 /node_modules
 /.vscode
 /config/serviceAccountKey.json
