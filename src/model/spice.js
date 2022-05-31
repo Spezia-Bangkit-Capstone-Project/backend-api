@@ -25,6 +25,10 @@ const spice = dbConnection.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    benefit: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
     created_at: {
       type: DataTypes.BIGINT,
     },
