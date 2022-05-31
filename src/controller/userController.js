@@ -40,7 +40,7 @@ const login = async (req, res) => {
         error: false,
         message: "Login successful",
         loginResult: {
-          userId: user.id,
+          userId: user.id.toString(),
           username: user.username,
           token: token,
         },

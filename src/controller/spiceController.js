@@ -14,15 +14,11 @@ const all = async (req, res) => {
       ],
     });
 
-    // reformat spices benefits value
-    spices.forEach((spice) =>
-      spice.setDataValue(
-        "benefits",
-        spice
-          .getDataValue("benefits")
-          .split(",")
-      )
-    );
+    // reformat spices benefits value and to string spiceId
+    spices.forEach((spice) => {
+      spice.setDataValue("spiceId", spice.getDataValue("spiceId").toString());
+      spice.setDataValue("benefits", spice.getDataValue("benefits").split(","));
+    });
 
     return res.json({
       error: false,
