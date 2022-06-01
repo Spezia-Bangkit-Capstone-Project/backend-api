@@ -25,7 +25,7 @@ const login = async (req, res) => {
 
     // find user data
     const user = await User.findOne({
-      attributes: ["id", "username", "password"],
+      attributes: [["id", "userId"], "username", "email", "password"],
       where: {
         email: email,
       },
@@ -34,14 +34,22 @@ const login = async (req, res) => {
     // if user found and password are equals
     if (user && bcryptjs.compareSync(password, user.password)) {
       // generate token
-      const token = jwt.sign({ _id: user.id }, process.env.SECRET_KEY);
+      const token = jwt.sign(
+        { _id: user.getDataValue("userId") },
+        process.env.SECRET_KEY
+      );
+
+      // convert id to string
+      user.setDataValue("userId", user.getDataValue("userId").toString());
+
+      // remove property password from object
+      delete user.dataValues.password;
 
       return res.status(200).json({
         error: false,
         message: "Login successful",
         loginResult: {
-          userId: user.id.toString(),
-          username: user.username,
+          ...user.dataValues,
           token: token,
         },
       });
@@ -113,22 +121,4 @@ const register = async (req, res) => {
   }
 };
 
-const getProfile = async (req, res) => {
-  try {
-    // response user data
-    return res.status(200).json({
-      error: false,
-      message: "Profile fetched successfully",
-      profileResult: {
-        userId: req.user.id,
-        username: req.user.username,
-        email: req.user.email,
-      },
-    });
-  } catch (error) {
-    console.log(error.message);
-    return res.status(500).end();
-  }
-};
-
-module.exports = { register, getProfile, login };
+module.exports = { register, login };

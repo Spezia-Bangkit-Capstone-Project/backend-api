@@ -14,13 +14,6 @@ router.get("/", (req, res) => {
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 
-// profil account
-router.get(
-  "/profile",
-  passport.authenticate("jwt", { session: false }),
-  UserController.getProfile
-);
-
 // dictionary of spice
 router.get(
   "/spices",
