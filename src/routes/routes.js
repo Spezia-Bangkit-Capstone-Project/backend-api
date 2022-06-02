@@ -21,4 +21,11 @@ router.get(
   SpiceController.all
 );
 
+// scan image
+router.post(
+  "/spices/scan",
+  passport.authenticate("jwt", { session: false }),
+  SpiceController.scan
+);
+
 module.exports = router;

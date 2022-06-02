@@ -1,4 +1,5 @@
 const Spice = require("../model/spice");
+const upload = require("../middleware/uploadFile");
 
 const all = async (req, res) => {
   try {
@@ -31,4 +32,29 @@ const all = async (req, res) => {
   }
 };
 
-module.exports = { all };
+const scan = async (req, res) => {
+  try {
+    await upload(req, res);
+
+    // check image is available or not
+    if (!req.file) {
+      return res.status(400).json({
+        error: true,
+        message: "Image is required",
+      });
+    }
+
+    return res.json({
+      error: false,
+      message: "Image uploaded successfully",
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { all, scan };
