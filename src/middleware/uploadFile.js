@@ -1,34 +1,40 @@
-const multer = require("multer");
-const util = require("util");
-const dir = "./storage/images";
+const { Storage } = require("@google-cloud/storage");
+const Multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
+// configure gcs
+const storage = new Storage({
+  projectId: process.env.GCS_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GCS_CLIENT_EMAIL,
+    private_key: process.env.GCS_PRIVATE_KEY,
   },
 });
 
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    // filter mime type file upload
-    if (
-      file.mimetype == "image/png" ||
-      file.mimetype == "image/jpg" ||
-      file.mimetype == "image/jpeg"
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
-    }
-  },
-}).single("image");
-util.promisify(upload);
+const bucket = storage.bucket(process.env.GCS_BUCKET_NAME);
 
-const file_upload = util.promisify(upload);
+// configure multer
+const multer = Multer({
+  storage: Multer.memoryStorage(),
+});
 
-module.exports = file_upload;
+// upload file
+const upload = (file) =>
+  new Promise((resolve, rejects) => {
+    const fileName = `${Date.now()}-${Math.round(
+      Math.random() * 1e9
+    )}-${file.originalname.replace(/ /g, "-")}`;
+
+    const blob = bucket.file(fileName);
+    const blobStream = blob.createWriteStream();
+    blobStream.on("finish", () => {
+      const publicUrl = `https://storage.googleapis.com/${process.env.GCS_BUCKET_NAME}/${blob.name}`;
+
+      resolve(publicUrl);
+    });
+
+    blobStream.on("error", (err) => console.log(err));
+
+    blobStream.end(file.buffer);
+  });
+
+module.exports = { multer, upload };

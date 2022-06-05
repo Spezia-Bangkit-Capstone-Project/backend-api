@@ -1,5 +1,5 @@
 const Spice = require("../model/spice");
-const upload = require("../middleware/uploadFile");
+const { upload } = require("../middleware/uploadFile");
 
 const all = async (req, res) => {
   try {
@@ -34,8 +34,6 @@ const all = async (req, res) => {
 
 const scan = async (req, res) => {
   try {
-    await upload(req, res);
-
     // check image is available or not
     if (!req.file) {
       return res.status(400).json({
@@ -44,13 +42,29 @@ const scan = async (req, res) => {
       });
     }
 
+    // check mimetype
+    if (
+      req.file.mimetype !== "image/png" &&
+      req.file.mimetype !== "image/jpg" &&
+      req.file.mimetype !== "image/jpeg" &&
+      req.file.mimetype !== "image/webp"
+    ) {
+      return res.status(400).json({
+        error: true,
+        message: "Only .png, .jpg, .jpeg, and .webp format allowed!",
+      });
+    }
+
+    const imageUrl = await upload(req.file);
+
     return res.json({
       error: false,
       message: "Image uploaded successfully",
+      url: imageUrl,
     });
   } catch (error) {
     console.log(error.message);
-    return res.status(500).json({
+    return res.status(400).json({
       error: true,
       message: error.message,
     });
