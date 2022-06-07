@@ -68,11 +68,40 @@ const scan = async (req, res) => {
           "content-type": "multipart/form-data",
         },
       })
-      .then((response) => {
-        return res.send(response.data);
+      .then(async (response) => {
+        const accuracy = response.data.data.confidence;
+        const name = response.data.data.prediction;
+        const spice = await Spice.findOne({
+          attributes: [
+            ["id", "spiceId"],
+            "name",
+            "latin_name",
+            "image",
+            "description",
+            ["benefit", "benefits"],
+          ],
+          where: {
+            name: name,
+          },
+        });
+
+        // reformat spices benefits value and to string spiceId
+        spice.setDataValue(
+          "benefits",
+          spice.getDataValue("benefits").split(",")
+        );
+
+        return res.json({
+          error: false,
+          message: "Prediction image successfully",
+          predictionResult: {
+            accuracy: accuracy,
+            ...spice.dataValues,
+          },
+        });
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.message);
         return res.status(500).send(error);
       });
   } catch (error) {
