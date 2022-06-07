@@ -1,4 +1,7 @@
 const Spice = require("../model/spice");
+const { upload } = require("../middleware/uploadFile");
+const axios = require("axios").default;
+const FormData = require("form-data");
 
 const all = async (req, res) => {
   try {
@@ -31,4 +34,51 @@ const all = async (req, res) => {
   }
 };
 
-module.exports = { all };
+const scan = async (req, res) => {
+  try {
+    // check image is available or not
+    if (!req.file) {
+      return res.status(400).json({
+        error: true,
+        message: "Image is required",
+      });
+    }
+
+    // check mimetype
+    if (
+      req.file.mimetype !== "image/png" &&
+      req.file.mimetype !== "image/jpg" &&
+      req.file.mimetype !== "image/jpeg" &&
+      req.file.mimetype !== "image/webp"
+    ) {
+      return res.status(400).json({
+        error: true,
+        message: "Only .png, .jpg, .jpeg, and .webp format allowed!",
+      });
+    }
+
+    // append image into formdata
+    const formData = new FormData();
+    formData.append("image", req.file.buffer, req.file.originalname);
+
+    // predict image
+    axios
+      .post("http://localhost:3000/predict", formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        return res.send(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).send(error);
+      });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).send(error);
+  }
+};
+
+module.exports = { all, scan };

@@ -4,6 +4,12 @@ const app = express();
 const cors = require("cors");
 const passport = require("passport");
 const routes = require("./src/routes/routes");
+const { multer } = require("./src/middleware/uploadFile");
+
+app.disable("x-powered-by");
+
+// get image data
+app.use(multer.single("image"));
 
 // use cors
 app.use(cors());
