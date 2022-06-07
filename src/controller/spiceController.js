@@ -1,5 +1,7 @@
 const Spice = require("../model/spice");
 const { upload } = require("../middleware/uploadFile");
+const axios = require("axios").default;
+const FormData = require("form-data");
 
 const all = async (req, res) => {
   try {
@@ -55,19 +57,27 @@ const scan = async (req, res) => {
       });
     }
 
-    const imageUrl = await upload(req.file);
+    // append image into formdata
+    const formData = new FormData();
+    formData.append("image", req.file.buffer, req.file.originalname);
 
-    return res.json({
-      error: false,
-      message: "Image uploaded successfully",
-      url: imageUrl,
-    });
+    // predict image
+    axios
+      .post("http://localhost:3000/predict", formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        return res.send(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).send(error);
+      });
   } catch (error) {
     console.log(error.message);
-    return res.status(400).json({
-      error: true,
-      message: error.message,
-    });
+    return res.status(500).send(error);
   }
 };
 
