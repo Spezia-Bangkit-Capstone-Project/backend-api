@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/storage": "^6.0.1",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -19,11 +18,11 @@
     "form-data": "^4.0.0",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
+    "mongoose": "^7.2.1",
+    "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^2.3.3",
     "passport": "^0.5.3",
-    "passport-jwt": "^4.0.0",
-    "sequelize": "^6.19.2"
+    "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"

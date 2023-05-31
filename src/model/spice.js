@@ -1,44 +1,20 @@
-const { DataTypes } = require("sequelize");
-const dbConnection = require("../database/config");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const spice = dbConnection.define(
-  "spice",
+const spices = new Schema(
   {
-    id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    name: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-    latin_name: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    image: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    benefit: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.BIGINT,
-    },
-    updated_at: {
-      type: DataTypes.BIGINT,
-    },
+    name: String,
+    latin_name: String,
+    image: String,
+    description: String,
+    benefit: String,
+    created_at: Number,
+    updated_at: Number,
   },
   {
-    timestamps: false,
+    collection: "spices",
+    versionKey: false,
   }
 );
 
-module.exports = spice;
+module.exports = mongoose.model("spices", spices);

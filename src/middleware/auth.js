@@ -12,10 +12,7 @@ opts.secretOrKey = process.env.SECRET_KEY;
 passport.use(
   new JwtStrategy(opts, function (jwt_payload, done) {
     User.findOne({
-      attributes: ["id", "username", "email"],
-      where: {
-        id: jwt_payload._id,
-      },
+      _id: jwt_payload._id,
     })
       .then((user) => {
         // verify user found and token is equals with database

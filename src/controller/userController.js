@@ -25,31 +25,21 @@ const login = async (req, res) => {
 
     // find user data
     const user = await User.findOne({
-      attributes: [["id", "userId"], "username", "email", "password"],
-      where: {
-        email: email,
-      },
+      email: email,
     });
 
     // if user found and password are equals
     if (user && bcryptjs.compareSync(password, user.password)) {
       // generate token
-      const token = jwt.sign(
-        { _id: user.getDataValue("userId") },
-        process.env.SECRET_KEY
-      );
-
-      // convert id to string
-      user.setDataValue("userId", user.getDataValue("userId").toString());
-
-      // remove property password from object
-      delete user.dataValues.password;
+      const token = jwt.sign({ _id: user.id }, process.env.SECRET_KEY);
 
       return res.status(200).json({
         error: false,
         message: "Login successful",
-        loginResult: {
-          ...user.dataValues,
+        data: {
+          userId: user.id,
+          username: user.username,
+          email: user.email,
           token: token,
         },
       });
@@ -91,28 +81,31 @@ const register = async (req, res) => {
     const created_at = Date.now();
     const updated_at = created_at;
 
-    // find or create user
-    const [user, created] = await User.findOrCreate({
-      where: { email: email },
-      defaults: {
-        username: username,
-        password: bcryptjs.hashSync(password, salt),
-        created_at: created_at,
-        updated_at: updated_at,
-      },
+    // check user
+    const user = await User.findOne({
+      email: email,
     });
 
     // if email has already in database
-    if (!created) {
+    if (user) {
       return res.status(400).json({
-        error: !created,
+        error: true,
         message: "Email has been used!",
       });
     }
 
+    // create user
+    await User.create({
+      username: username,
+      email: email,
+      password: bcryptjs.hashSync(password, salt),
+      created_at: created_at,
+      updated_at: updated_at,
+    });
+
     // if user has already created
     return res.status(201).json({
-      error: !created,
+      error: false,
       message: "User created successfully",
     });
   } catch (error) {

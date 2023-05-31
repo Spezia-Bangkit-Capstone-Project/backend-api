@@ -1,32 +1,33 @@
 const Spice = require("../model/spice");
-const { upload } = require("../middleware/uploadFile");
 const axios = require("axios").default;
 const FormData = require("form-data");
 
 const all = async (req, res) => {
   try {
     // get all data spices
-    const spices = await Spice.findAll({
-      attributes: [
-        ["id", "spiceId"],
-        "name",
-        "latin_name",
-        "image",
-        "description",
-        ["benefit", "benefits"],
-      ],
-    });
+    const spices = await Spice.aggregate([
+      {
+        $project: {
+          _id: 0,
+          spiceId: "$_id",
+          name: 1,
+          latin_name: 1,
+          image: 1,
+          description: 1,
+          benefits: "$benefit",
+        },
+      },
+    ]);
 
     // reformat spices benefits value and to string spiceId
     spices.forEach((spice) => {
-      spice.setDataValue("spiceId", spice.getDataValue("spiceId").toString());
-      spice.setDataValue("benefits", spice.getDataValue("benefits").split(","));
+      spice.benefits = spice.benefits.split(",");
     });
 
     return res.json({
       error: false,
       message: "Data spices fetched successfully",
-      spicesResult: spices,
+      data: spices,
     });
   } catch (error) {
     console.log(error.message);
@@ -63,40 +64,29 @@ const scan = async (req, res) => {
 
     // predict image
     axios
-      .post("http://localhost:3000/predict", formData, {
+      .post(process.env.PREDICT_URL, formData, {
         headers: {
           "content-type": "multipart/form-data",
         },
       })
       .then(async (response) => {
-        const accuracy = response.data.data.confidence;
+        const confidence = response.data.data.confidence;
         const name = response.data.data.prediction;
         const spice = await Spice.findOne({
-          attributes: [
-            ["id", "spiceId"],
-            "name",
-            "latin_name",
-            "image",
-            "description",
-            ["benefit", "benefits"],
-          ],
-          where: {
-            name: name,
-          },
+          name: { $regex: name, $options: "i" },
         });
-
-        // reformat spices benefits value and to string spiceId
-        spice.setDataValue(
-          "benefits",
-          spice.getDataValue("benefits").split(",")
-        );
 
         return res.json({
           error: false,
           message: "Prediction image successfully",
-          predictionResult: {
-            accuracy: accuracy,
-            ...spice.dataValues,
+          data: {
+            confidence: confidence,
+            spiceId: spice.id,
+            name: spice.name,
+            latin_name: spice.latin_name,
+            image: spice.image,
+            description: spice.description,
+            benefits: spice.benefit.split(","),
           },
         });
       })
