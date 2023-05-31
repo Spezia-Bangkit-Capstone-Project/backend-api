@@ -19,13 +19,13 @@ https://spezia-app-352214.et.r.appspot.com/
       **body :**
       ```
       {
-          "error": false,
-          "message": "Login successful",
-          "loginResult": {
-              "userId": "1",
-              "username": "Arif Faizin",
-              "email: : "ariffaizin@gmail.com",
-              "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLXlqNXBjX0xBUkNfQWdLNjEiLCJpYXQiOjE2NDE3OTk5NDl9.flEMaQ7zsdYkxuyGbiXjEDXO8kuDTcI__3UjCwt6R_I"
+          "error": Boolean,
+          "message": String,
+          "data": {
+              "userId": String,
+              "username": String,
+              "email: : String,
+              "token": String
           }
       }
       ```
@@ -38,12 +38,11 @@ https://spezia-app-352214.et.r.appspot.com/
     `email` as `string` </br>
     `password` as `string`
   * **Response :** </br>
-    * **status code :** 200 </br>
-      **body :**
+    * **body :**
       ```
       {
-          "error": false,
-          "message": "User created successfully"
+          "error": Boolean,
+          "message": String
       }
       ```
 
@@ -57,36 +56,17 @@ https://spezia-app-352214.et.r.appspot.com/
       **body :**
       ```
       {
-          "error": false,
-          "message": "Data spices fetched successfully",
-          "spicesResult": [
+          "error": Boolean,
+          "message": String,
+          "data": [
               {
-                  "spiceId": "1",
-                  "name": "Jahe",
-                  "latin_name": "Zingiber officinale",
-                  "image": "https://storage.googleapis.com/spices-image/ginger/jahe%20(11).jpeg",
-                  "description": "Jahe adalah tumbuhan yang rimpangnya sering digunakan sebagai rempah-rempah dan bahan baku pengobatan tradisional. Rimpangnya berbentuk jemari yang menggembung di ruas-ruas tengah. Rasa dominan pedas yang dirasakan dari jahe disebabkan oleh senyawa keton bernama zingeron. Jahe termasuk dalam famili Zingiberaceae.",
-                  "benefits": [
-                       "Meredakan batuk",
-                       "Mengurangi resiko penyakit jantung",
-                       "Menjaga kestabilan kadar gula darah",
-                       "Meredakan Nyeri Haid",
-                       "Mengatasi Masalah Pencernaan"
-                  ]
+                  "spiceId": String,
+                  "name": String,
+                  "latin_name": String,
+                  "image": String,
+                  "description": String,
+                  "benefits": Array
               },
-              {
-                  "spiceId": "2",
-                  "name": "Kunyit",
-                  "latin_name": "Curcuma domestica",
-                  "image": "https://storage.googleapis.com/spices-image/kunyit/kunyit%20(6).jpg",
-                  "description": "Kunyit atau kunir adalah termasuk salah satu tanaman rempah-rempah dan obat asli dari wilayah Asia Tenggara. Tanaman ini kemudian mengalami penyebaran ke daerah Malaysia, Indonesia, Australia bahkan Afrika.",
-                  "benefits": [
-                       "Mencegah penyakit jantung",
-                       "Mencegah kanker",
-                       "Mengatasi gangguan saluran pencernaan",
-                       "Membantu meningkatkan fungsi imunitas tubuh"
-                  ]
-              }
           ]
       }
       ```
@@ -104,22 +84,16 @@ https://spezia-app-352214.et.r.appspot.com/
       **body :**
       ```
       {
-          "error": false,
-          "message": "Prediction image successfully",
-          "predictionResult": {
-                  "accuracy": "100%",
-                  "spiceId": "1",
-                  "name": "Jahe",
-                  "latin_name": "Zingiber officinale",
-                  "image": "https://storage.googleapis.com/spices-image/ginger/jahe%20(11).jpeg",
-                  "description": "Jahe adalah tumbuhan yang rimpangnya sering digunakan sebagai rempah-rempah dan bahan baku pengobatan tradisional. Rimpangnya berbentuk jemari yang menggembung di ruas-ruas tengah. Rasa dominan pedas yang dirasakan dari jahe disebabkan oleh senyawa keton bernama zingeron. Jahe termasuk dalam famili Zingiberaceae.",
-                  "benefits": [
-                      "Meredakan batuk",
-                      "Mengurangi resiko penyakit jantung",
-                      "Menjaga kestabilan kadar gula darah",
-                      "Meredakan Nyeri Haid",
-                      "Mengatasi Masalah Pencernaan"
-                  ]
+          "error": Boolean,
+          "message": String,
+          "data": {
+                  "confidence": String,
+                  "spiceId": String,
+                  "name": String,
+                  "latin_name": String,
+                  "image": String,
+                  "description": String,
+                  "benefits": Array
           }
       }
       ```
