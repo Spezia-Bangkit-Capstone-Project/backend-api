@@ -22,10 +22,17 @@ router.get(
 );
 
 // scan image
-router.post(
-  "/spices/scan",
+// router.post(
+//   "/spices/scan",
+//   passport.authenticate("jwt", { session: false }),
+//   SpiceController.scan
+// );
+
+// get spesific spices
+router.get(
+  "/spices/getByName",
   passport.authenticate("jwt", { session: false }),
-  SpiceController.scan
+  SpiceController.getByName
 );
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const Spice = require("../model/spice");
 const axios = require("axios").default;
 const FormData = require("form-data");
+const Joi = require("joi");
 
 const all = async (req, res) => {
   try {
@@ -100,4 +101,50 @@ const scan = async (req, res) => {
   }
 };
 
-module.exports = { all, scan };
+const getByName = async (req, res) => {
+  try {
+    const rules = Joi.object({
+      name: Joi.string().required(),
+    });
+    const { error } = rules.validate(req.query);
+
+    // if form data is invalid
+    if (error) {
+      return res.status(400).json({
+        error: true,
+        message: error.details[0].message,
+      });
+    }
+
+    // get spice by name
+    const spice = await Spice.findOne({
+      name: { $regex: req.query.name, $options: "i" },
+    });
+
+    // if data exist
+    if (spice) {
+      return res.json({
+        error: false,
+        message: "Data spice fetched successfully",
+        data: {
+          spiceId: spice.id,
+          name: spice.name,
+          latin_name: spice.latin_name,
+          image: spice.image,
+          description: spice.description,
+          benefits: spice.benefit.split(","),
+        },
+      });
+    }
+
+    return res.status(404).json({
+      error: true,
+      message: "Data spice not found",
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).send(error); // validation form data
+  }
+};
+
+module.exports = { all, scan, getByName };
