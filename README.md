@@ -71,8 +71,8 @@ https://spezia-app-352214.et.r.appspot.com/
       }
       ```
 
-* **Scan Image**
-  * **Endpoint :** `/spices/scan`
+* **~~Scan Image (deprecated)~~**
+  * **Endpoint :** `/spices/scan` 
   * **Method :** `POST`
   * **Header :** </br>
     `Content-Type` : `multipart/form-data` </br>
@@ -88,6 +88,30 @@ https://spezia-app-352214.et.r.appspot.com/
           "message": String,
           "data": {
                   "confidence": String,
+                  "spiceId": String,
+                  "name": String,
+                  "latin_name": String,
+                  "image": String,
+                  "description": String,
+                  "benefits": Array
+          }
+      }
+      ```
+* **Get Spice By Name**
+  * **Endpoint :** `/spices/getByName`
+  * **Method :** `POST`
+  * **Header :** </br>
+    `Authorization` : `Bearer <token>` 
+  * **Query Parameter :** </br>
+    `name` as `string`
+  * **Response :** </br>
+    * **status code :** 200 </br>
+      **body :**
+      ```
+      {
+          "error": Boolean,
+          "message": String,
+          "data": {
                   "spiceId": String,
                   "name": String,
                   "latin_name": String,
